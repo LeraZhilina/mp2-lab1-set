@@ -9,80 +9,138 @@
 
 TSet::TSet(int mp) : BitField(mp)
 {
+	MaxPower = mp;
 }
 
 // конструктор копирования
-TSet::TSet(const TSet &s) : BitField(-1)
+TSet::TSet(const TSet &s) : BitField(s.BitField)
 {
+	MaxPower = s.MaxPower;
 }
 
 // конструктор преобразования типа
-TSet::TSet(const TBitField &bf) : BitField(-1)
+TSet::TSet(const TBitField &bf) : BitField(bf)
 {
+	MaxPower = bf.GetLength();
 }
 
 TSet::operator TBitField()
 {
+  return BitField;
 }
 
 int TSet::GetMaxPower(void) const // получить макс. к-во эл-тов
 {
+  return MaxPower;
 }
 
 int TSet::IsMember(const int Elem) const // элемент множества?
 {
-    return 0;
+    return BitField.GetBit(Elem);
 }
 
 void TSet::InsElem(const int Elem) // включение элемента множества
 {
+	BitField.SetBit(Elem);
 }
 
 void TSet::DelElem(const int Elem) // исключение элемента множества
 {
+	BitField.ClrBit(Elem);
 }
 
 // теоретико-множественные операции
 
 TSet& TSet::operator=(const TSet &s) // присваивание
 {
+	BitField = s.BitField;
+	MaxPower = s.MaxPower;
+  return *this;
 }
 
 int TSet::operator==(const TSet &s) const // сравнение
 {
-    return 0;
+	if (BitField==s.BitField)
+    return 1;
+	else return 0;
 }
 
 int TSet::operator!=(const TSet &s) const // сравнение
 {
+	if (BitField != s.BitField)
+		return 1;
+	else return 0;
+  return 0;
 }
 
 TSet TSet::operator+(const TSet &s) // объединение
 {
+	TBitField r = BitField | s.BitField;
+	TSet a(BitField | s.BitField);
+  return a;
 }
 
 TSet TSet::operator+(const int Elem) // объединение с элементом
 {
+	if (Elem < MaxPower)
+	{
+		TSet a(BitField);
+		a.InsElem(Elem);
+		return a;
+	}
+	else
+		throw 1;
+
 }
 
 TSet TSet::operator-(const int Elem) // разность с элементом
 {
+	if (Elem < MaxPower)
+	{
+		TSet a(BitField);
+		a.DelElem(Elem);
+		return a;
+	}
+	else
+		throw 1;
+
 }
 
 TSet TSet::operator*(const TSet &s) // пересечение
 {
+	TBitField r = BitField & s.BitField;
+	TSet a(r);
+	return a;
+
 }
 
 TSet TSet::operator~(void) // дополнение
 {
+	TBitField r = ~BitField;
+	TSet a(r);
+	return a;
 }
 
 // перегрузка ввода/вывода
 
 istream &operator>>(istream &istr, TSet &s) // ввод
 {
+  return istr;
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
+	int i, n; char ch = ' ';
+	n = s.GetMaxPower();
+	ostr << "{ ";
+	for (i = 0; i < n; i++)
+	{
+		if (s.IsMember(i))
+
+		{
+			ostr << ch << i << ' ';
+		}
+	}
+	ostr << "}";
+	return ostr;
 }
