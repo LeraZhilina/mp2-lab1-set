@@ -178,7 +178,27 @@ TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 
 TBitField TBitField::operator&(const TBitField &bf) // операция "и"
 {
-	int i;
+	
+		if (BitLen > bf.BitLen)
+		{
+			TBitField temp(BitLen);
+			for (int i = 0; i < bf.MemLen; i++)
+				temp.pMem[i] = pMem[i] & bf.pMem[i];
+			for (int i = bf.MemLen; i < temp.MemLen; i++)
+				temp.pMem[i] = 0;
+			return temp;
+		}
+		else
+		{
+			TBitField temp(bf.BitLen);
+			for (int i = 0; i < MemLen; i++)
+				temp.pMem[i] = pMem[i] & bf.pMem[i];
+			for (int i = MemLen; i < temp.MemLen; i++)
+				temp.pMem[i] = 0;
+			return temp;
+		
+	}
+	/*int i;
 	int	len = BitLen;
 	if (bf.BitLen > len)
 	{
@@ -193,7 +213,7 @@ TBitField TBitField::operator&(const TBitField &bf) // операция "и"
 	{
 		a.pMem[i] &= bf.pMem[i];
 	}
-	return a;
+	return a;*/
 }
 
 TBitField TBitField::operator~(void) // отрицание
